@@ -18,7 +18,7 @@
             <li><button>ログイン</button></li>
 
             <li><button>ログアウト</button></li>
-            <li><button>ユーザー登録</button></li>
+            <li><a href="user-management.php"><button>ユーザー登録</button></a></li>
         </ul>
     </div>
     <form method="POST">
@@ -66,7 +66,9 @@
             }
              $title = $_POST["title"];
             //  本来は、ログインしているユーザーのuser_id
-             $user_id = 3;
+            // FIXME リロードすると勝手に投稿される
+            // TODO ログイン実装したら、動的に初期化する
+             $user_id = 1;
              $stmt = $pdo->prepare("INSERT INTO posts (user_id,text) VALUES (:user_id,:title)");
              $stmt->bindValue(':user_id', $user_id, PDO::PARAM_STR);
              $stmt->bindValue(':title', $title, PDO::PARAM_STR);
@@ -80,16 +82,14 @@
         $result = null;
         
         // SQL実行
-        $result = $pdo->query("SELECT * FROM posts");
+        // TODO usersテーブルを表示
+        $result = $pdo->query("select users.name, posts.text from users inner join posts on users.id = posts.user_id;");
 
         // 取得したデータを出力
-        
         foreach( $result as $value ) {
-         echo "<p>$value[text]:ユーザーID→$value[user_id]</p>";
-
+          // TODO usersテーブルのユーザー名を表示
+          echo "<p>$value[text]  :  ユーザー名→$value[name]</p>";
         }
-
-
     ?>
 
     <button>削除</button>
